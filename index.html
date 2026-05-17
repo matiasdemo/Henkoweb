@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Henko Espacio Integral</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --verde: #4aaa8a;
+  --verde-medio: #3a9a7a;
+  --verde-oscuro: #2a7a5a;
+  --verde-claro: #d4ede3;
+  --verde-suave: #eaf5ef;
+  --verde-fondo: #3a9e7a;
+  --amarillo: #f5c842;
+  --texto: #1a2420;
+  --texto-suave: #4a5e55;
+  --texto-claro: #7a9085;
+  --fondo: #f2f6f4;
+  --borde: rgba(58,158,122,0.14);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Barlow', sans-serif;
+  background: var(--fondo);
+  color: var(--texto);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* REVEAL */
+.reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1), transform 0.75s cubic-bezier(0.16,1,0.3,1);
+}
+.reveal.from-left  { transform: translateX(-36px); }
+.reveal.from-right { transform: translateX(36px); }
+.reveal.visible    { opacity: 1 !important; transform: none !important; }
+.d1{transition-delay:.07s}.d2{transition-delay:.16s}.d3{transition-delay:.25s}
+.d4{transition-delay:.34s}.d5{transition-delay:.43s}.d6{transition-delay:.52s}
+
+/* NAV */
+nav {
+  position: fixed; top:0; left:0; right:0; height:68px;
+  background: var(--verde-fondo);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid transparent; z-index:200;
+  display:flex; align-items:center; justify-content:space-between; padding:0 4rem;
+  transition: background .35s, border-color .35s, box-shadow .35s;
+}
+nav.scrolled { background:rgba(255,255,255,.97); border-color:var(--borde); box-shadow:0 2px 24px rgba(0,0,0,.07); }
+.nav-logo { display:flex; align-items:center; text-decoration:none; }
+.nav-logo img { height:46px; width:auto; object-fit:contain; }
+.nav-links { display:flex; gap:2.5rem; list-style:none; align-items:center; }
+.nav-links a {
+  font-size:13px; font-weight:500; letter-spacing:.6px; text-transform:uppercase;
+  color:rgba(255,255,255,.85); text-decoration:none; transition:color .2s;
+}
+.nav-links a:hover { color:white; }
+.nav-cta {
+  background:rgba(255,255,255,.2) !important; color:white !important;
+  padding:9px 22px !important; border-radius:4px;
+  font-size:12px !important; font-weight:600 !important; letter-spacing:.8px !important;
+  border:1.5px solid rgba(255,255,255,.4) !important;
+  transition:background .2s !important;
+}
+.nav-cta:hover { background:rgba(255,255,255,.3) !important; }
+nav.scrolled .nav-links a { color:var(--texto-suave); }
+nav.scrolled .nav-links a:hover { color:var(--verde); }
+nav.scrolled .nav-cta {
+  background:var(--verde-fondo) !important; color:white !important;
+  border:none !important;
+}
+nav.scrolled .nav-cta:hover { background:var(--verde-oscuro) !important; }
+
+/* HERO */
+.hero {
+  min-height:100vh; display:grid; grid-template-columns:58% 42%;
+  padding-top:68px; overflow:hidden; position:relative;
+}
+.hero-left {
+  display:flex; flex-direction:column; justify-content:center;
+  padding:5rem 5rem 5rem 4.5rem;
+  background:var(--verde-suave); position:relative; z-index:2;
+}
+/* ROTO divider — efecto zigzag desgarrado */
+.hero-left::after {
+  content:'';
+  position:absolute; top:0; right:-60px; bottom:0; width:120px;
+  background:var(--verde-suave); z-index:3;
+  clip-path: polygon(
+    0 0, 58% 0,
+    100% 4%, 62% 9%,
+    100% 15%, 58% 20%,
+    100% 26%, 60% 32%,
+    100% 38%, 56% 44%,
+    100% 50%, 60% 56%,
+    100% 62%, 58% 68%,
+    100% 74%, 62% 80%,
+    100% 86%, 58% 91%,
+    100% 97%, 60% 100%,
+    0 100%
+  );
+}
+/* franja amarilla "roto" sobre la foto */
+.hero-right::before {
+  content:'';
+  position:absolute; top:0; left:-4px; bottom:0; width:68px; z-index:2;
+  background:var(--amarillo); opacity:.9;
+  clip-path: polygon(
+    0 0, 52% 0,
+    100% 5%, 48% 11%,
+    100% 17%, 52% 23%,
+    100% 29%, 46% 36%,
+    100% 42%, 50% 49%,
+    100% 55%, 48% 62%,
+    100% 68%, 52% 75%,
+    100% 81%, 48% 88%,
+    100% 94%, 52% 100%,
+    0 100%
+  );
+}
+.hero-right { position:relative; overflow:hidden; z-index:1; }
+.hero-right img {
+  width:100%; height:100%; object-fit:cover; display:block;
+  filter:brightness(.8) saturate(.85);
+  transition:transform 10s ease;
+}
+.hero:hover .hero-right img { transform:scale(1.03); }
+
+.hero-tag {
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--amarillo); color:#3a2800;
+  font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase;
+  padding:7px 16px; border-radius:3px; margin-bottom:1.6rem; width:fit-content;
+}
+.hero h1 {
+  font-family:'Barlow Condensed', sans-serif;
+  font-size:clamp(2.8rem,5vw,4.2rem); font-weight:700; line-height:1.05;
+  color:var(--texto); margin-bottom:1.4rem; letter-spacing:-0.5px; text-transform:uppercase;
+}
+.hero h1 em {
+  font-style:italic; font-family:'Barlow', sans-serif; font-weight:300;
+  text-transform:none; color:var(--verde-fondo); font-size:.86em; display:block;
+}
+.hero-desc {
+  font-size:16px; font-weight:300; color:var(--texto-suave);
+  line-height:1.75; margin-bottom:2.4rem; max-width:430px;
+}
+.hero-btns { display:flex; gap:1rem; flex-wrap:wrap; }
+
+.btn-primary {
+  background:var(--verde-fondo); color:white; padding:13px 28px; border-radius:4px;
+  font-size:13px; font-weight:600; letter-spacing:.5px; text-transform:uppercase;
+  text-decoration:none; transition:background .2s, transform .15s;
+  display:inline-flex; align-items:center; gap:8px;
+}
+.btn-primary:hover { background:var(--verde-oscuro); transform:translateY(-2px); }
+.btn-outline {
+  background:transparent; color:var(--verde-fondo); padding:12px 28px; border-radius:4px;
+  font-size:13px; font-weight:600; letter-spacing:.5px; text-transform:uppercase;
+  text-decoration:none; border:2px solid var(--verde-fondo);
+  transition:background .2s, transform .15s; display:inline-flex; align-items:center;
+}
+.btn-outline:hover { background:var(--verde-claro); transform:translateY(-2px); }
+
+.hero-mensaje {
+  margin-top:2.5rem; padding-top:2.5rem; border-top:1px solid var(--borde);
+}
+.hero-mensaje-inner {
+  display:flex; align-items:center; gap:1.5rem;
+  background:rgba(58,158,122,0.08); border-radius:6px; padding:1.2rem 1.5rem;
+  border-left:4px solid var(--verde-fondo);
+}
+.hero-mensaje-inner p {
+  font-size:17px; font-weight:400; color:var(--texto-suave); line-height:1.5; margin:0;
+}
+.hero-mensaje-inner p strong { font-weight:700; color:var(--texto); font-size:18px; }
+
+/* QUIÉNES SOMOS — VERDE */
+.quienes { padding:8rem 4rem; background:var(--verde-fondo); position:relative; }
+.quienes-inner {
+  max-width:1140px; margin:0 auto;
+  display:grid; grid-template-columns:1fr 1fr; gap:6rem; align-items:center;
+}
+.quienes-logo-col { display:flex; flex-direction:column; align-items:center; gap:2.5rem; }
+.quienes-bird-wrap {
+  width:100%; max-width:320px;
+  display:flex; align-items:center; justify-content:center;
+}
+.quienes-bird-wrap img {
+  width:100%; height:auto; object-fit:contain;
+  filter:drop-shadow(0 8px 24px rgba(0,0,0,0.25));
+}
+.quienes-quote {
+  font-size:17px; font-weight:300; font-style:italic;
+  color:rgba(255,255,255,.82); line-height:1.7;
+  max-width:280px; border-left:3px solid var(--amarillo); padding-left:1.2rem;
+}
+
+.eyebrow {
+  font-size:11px; font-weight:600; letter-spacing:2.5px; text-transform:uppercase;
+  margin-bottom:.8rem; display:flex; align-items:center; gap:10px;
+}
+.eyebrow::before { content:''; display:block; width:24px; height:2px; }
+.quienes .eyebrow { color:var(--amarillo); }
+.quienes .eyebrow::before { background:var(--amarillo); }
+.talleres .eyebrow, .contacto .eyebrow { color:var(--verde); }
+.talleres .eyebrow::before, .contacto .eyebrow::before { background:var(--verde); }
+
+.section-title {
+  font-family:'Barlow Condensed', sans-serif;
+  font-size:clamp(2rem,3.5vw,3rem); font-weight:700; line-height:1.1;
+  margin-bottom:1.4rem; letter-spacing:-.2px; text-transform:uppercase;
+}
+.quienes .section-title { color:white; }
+.talleres .section-title, .contacto .section-title { color:var(--texto); }
+
+.quienes-text p {
+  font-size:15px; font-weight:300; color:rgba(255,255,255,.82); line-height:1.85; margin-bottom:1rem;
+}
+.pillars { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:2rem; }
+.pillar {
+  padding:16px 18px; background:rgba(255,255,255,.1); border-radius:4px;
+  border-left:3px solid var(--amarillo); transition:background .2s, transform .2s;
+}
+.pillar:hover { background:rgba(255,255,255,.17); transform:translateY(-2px); }
+.pillar h4 { font-size:13px; font-weight:600; color:white; margin-bottom:3px; }
+.pillar p  { font-size:12px; color:rgba(255,255,255,.62); font-weight:300; line-height:1.5; }
+
+/* TALLERES — FONDO CLARO */
+.talleres { padding:8rem 4rem; background:var(--fondo); }
+.talleres-header {
+  max-width:1140px; margin:0 auto 4rem;
+  display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:1rem;
+}
+.talleres .section-title { margin-bottom:0; }
+.talleres-note { font-size:13px; color:var(--texto-claro); font-weight:400; max-width:260px; text-align:right; line-height:1.6; }
+.talleres-grid { max-width:1140px; margin:0 auto; display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+
+.taller-card {
+  background:white; border-radius:6px; overflow:hidden; border:1px solid rgba(0,0,0,.07);
+  transition:transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s;
+}
+.taller-card:hover { transform:translateY(-7px); box-shadow:0 20px 48px rgba(0,0,0,.1); }
+.taller-img-wrap { position:relative; overflow:hidden; height:190px; }
+.taller-img-wrap img {
+  width:100%; height:100%; object-fit:cover; display:block;
+  filter:brightness(.8) saturate(.75); transition:transform .6s cubic-bezier(.16,1,.3,1);
+}
+.taller-card:hover .taller-img-wrap img { transform:scale(1.07); }
+.taller-img-wrap::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(to top,rgba(15,30,20,.55) 0%,transparent 55%);
+}
+.taller-badge {
+  position:absolute; top:12px; left:12px; z-index:1;
+  background:var(--amarillo); color:#3a2800;
+  font-size:9px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
+  padding:5px 10px; border-radius:2px;
+}
+.taller-body { padding:1.4rem 1.5rem 1.7rem; }
+.taller-body h3 {
+  font-family:'Barlow Condensed', sans-serif;
+  font-size:1.35rem; font-weight:700; color:var(--texto);
+  margin-bottom:8px; text-transform:uppercase; line-height:1.2;
+}
+.taller-body p { font-size:13px; font-weight:300; color:var(--texto-suave); line-height:1.7; margin-bottom:16px; }
+.taller-meta {
+  display:flex; align-items:center; gap:8px;
+  padding:9px 12px; background:var(--verde-suave); border-radius:4px;
+  font-size:12px; font-weight:500; color:var(--texto-suave);
+}
+.taller-meta-dot { width:6px; height:6px; border-radius:50%; background:var(--verde); flex-shrink:0; }
+
+/* CONTACTO — BLANCO */
+.contacto { padding:8rem 4rem; background:white; }
+.contacto-inner {
+  max-width:1140px; margin:0 auto;
+  display:grid; grid-template-columns:1fr 1fr; gap:6rem; align-items:start;
+}
+.contacto-left > p { font-size:15px; font-weight:300; color:var(--texto-suave); line-height:1.8; margin-bottom:2.5rem; }
+.contact-btns { display:flex; flex-direction:column; gap:13px; }
+.contact-btn {
+  display:flex; align-items:center; gap:14px; padding:15px 20px; border-radius:6px;
+  text-decoration:none; font-size:14px; font-weight:500; transition:transform .2s, filter .2s;
+}
+.contact-btn:hover { transform:translateY(-3px); filter:brightness(.9); }
+.btn-wa { background:#25D366; color:white; }
+.btn-ig { background:linear-gradient(135deg,#f09433,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888); color:white; }
+.btn-mail { background:var(--verde-suave); color:var(--texto); border:1px solid var(--borde); }
+.cbtn-icon { width:36px; height:36px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+
+/* FORM */
+.form-wrap {
+  background:var(--verde-suave); border-radius:8px; padding:2.5rem; border:1px solid var(--borde);
+}
+.form-wrap h3 {
+  font-family:'Barlow Condensed', sans-serif;
+  font-size:1.8rem; font-weight:700; text-transform:uppercase; color:var(--texto); margin-bottom:1.8rem;
+}
+.fg { margin-bottom:13px; }
+.fg label { display:block; font-size:10px; font-weight:600; letter-spacing:1.2px; text-transform:uppercase; color:var(--texto-claro); margin-bottom:5px; }
+.fg input, .fg select, .fg textarea {
+  width:100%; background:white; border:1px solid var(--borde); border-radius:5px; padding:11px 14px;
+  font-size:14px; font-family:'Barlow', sans-serif; font-weight:400; color:var(--texto);
+  outline:none; appearance:none; -webkit-appearance:none; transition:border-color .2s, box-shadow .2s;
+}
+.fg input:focus, .fg select:focus, .fg textarea:focus {
+  border-color:var(--verde); box-shadow:0 0 0 3px rgba(58,158,122,.12);
+}
+.fg textarea { resize:vertical; min-height:88px; line-height:1.6; }
+.form-btn {
+  width:100%; background:var(--verde-fondo); color:white; border:none; border-radius:4px; padding:14px;
+  font-family:'Barlow', sans-serif; font-size:13px; font-weight:600; letter-spacing:.8px; text-transform:uppercase;
+  cursor:pointer; transition:background .2s, transform .15s; margin-top:6px;
+}
+.form-btn:hover { background:var(--verde-oscuro); transform:translateY(-1px); }
+#form-success { display:none; text-align:center; padding:3rem 1rem; }
+#form-success .s-icon { font-size:48px; margin-bottom:16px; }
+#form-success h4 {
+  font-family:'Barlow Condensed', sans-serif; font-size:1.8rem; font-weight:700; text-transform:uppercase;
+  color:var(--verde-fondo); margin-bottom:8px;
+}
+#form-success p { font-size:14px; font-weight:300; color:var(--texto-suave); line-height:1.7; }
+
+/* FOOTER */
+footer { background:#162018; color:#5a7060; padding:4rem 4rem 2.5rem; }
+.footer-inner {
+  max-width:1140px; margin:0 auto;
+  display:grid; grid-template-columns:2fr 1fr 1fr; gap:4rem;
+  padding-bottom:3rem; border-bottom:1px solid rgba(255,255,255,.06); margin-bottom:2rem;
+}
+.footer-brand img { height:50px; width:auto; margin-bottom:1rem; filter:brightness(0) invert(1) opacity(.55); }
+.footer-brand p { font-size:13px; font-weight:300; line-height:1.75; color:#4a6050; max-width:280px; }
+.footer-col h5 { font-size:10px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#7a9080; margin-bottom:1.2rem; }
+.footer-col ul { list-style:none; }
+.footer-col ul li { margin-bottom:10px; }
+.footer-col ul a { font-size:13px; font-weight:300; color:#4a6050; text-decoration:none; transition:color .2s; }
+.footer-col ul a:hover { color:white; }
+.footer-copy {
+  max-width:1140px; margin:0 auto; font-size:12px; color:#304035;
+  display:flex; justify-content:space-between; flex-wrap:wrap; gap:.5rem;
+}
+
+/* RESPONSIVE */
+@media (max-width:1024px) {
+  nav { padding:0 2rem; }
+  .hero-left { padding:4rem 2.5rem; }
+  .quienes, .talleres, .contacto { padding:6rem 2rem; }
+  .quienes-inner { gap:3rem; }
+  .talleres-grid { grid-template-columns:repeat(2,1fr); }
+  .contacto-inner { gap:3rem; }
+  footer { padding:3rem 2rem 2rem; }
+  .footer-inner { grid-template-columns:1fr 1fr; gap:2rem; }
+}
+@media (max-width:768px) {
+  .nav-links { display:none; }
+  .hero { grid-template-columns:1fr; min-height:auto; }
+  .hero-left { padding:4rem 1.5rem 3rem; }
+  .hero-left::after, .hero-right::before { display:none; }
+  .hero-right { height:260px; }
+  .hero-stats { gap:1.5rem; }
+  .quienes-inner { grid-template-columns:1fr; }
+  .quienes-logo-col { flex-direction:row; gap:2rem; }
+  .quienes-bird-wrap { max-width:140px; flex-shrink:0; }
+  .pillars { grid-template-columns:1fr; }
+  .talleres-grid { grid-template-columns:1fr; }
+  .talleres-header { flex-direction:column; align-items:flex-start; }
+  .talleres-note { text-align:left; }
+  .contacto-inner { grid-template-columns:1fr; }
+  .footer-inner { grid-template-columns:1fr; gap:2rem; }
+  .footer-copy { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="#inicio" class="nav-logo"><img src="logo.jpg" alt="Henko Espacio Integral"></a>
+  <ul class="nav-links">
+    <li><a href="#quienes">Quiénes somos</a></li>
+    <li><a href="#talleres">Talleres</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+    <li><a href="#contacto" class="nav-cta">Consultanos</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="hero-left">
+    <div class="reveal d1"><span class="hero-tag">Espacio terapéutico · Buenos Aires</span></div>
+    <div class="reveal d2">
+      <h1>Un espacio para<em>acompañar tu proceso de cambio</em></h1>
+    </div>
+    <div class="reveal d3">
+      <p class="hero-desc">Somos un equipo de profesionales en psicología, psicopedagogía, docencia y salud, comprometidos con el bienestar emocional en todas las etapas de la vida.</p>
+    </div>
+    <div class="hero-btns reveal d4">
+      <a href="#talleres" class="btn-primary">Ver nuestros talleres →</a>
+      <a href="#contacto" class="btn-outline">Escribinos</a>
+    </div>
+    <div class="hero-mensaje reveal d5">
+      <div class="hero-mensaje-inner">
+        <p>Grupos de <strong>6 personas</strong> para que cada proceso sea realmente escuchado</p>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img src="espacio.jpg" alt="Sala de talleres Henko">
+  </div>
+</section>
+
+<!-- QUIÉNES SOMOS -->
+<section class="quienes" id="quienes">
+  <div class="quienes-inner">
+    <div class="quienes-logo-col reveal from-left">
+      <div class="quienes-bird-wrap">
+        <img src="bird.png" alt="Henko pájaro origami">
+      </div>
+      <p class="quienes-quote">"Un espacio pensado para acompañar procesos de cambio en todas las etapas de la vida."</p>
+    </div>
+    <div>
+      <div class="reveal d1">
+        <p class="eyebrow">Quiénes somos</p>
+        <h2 class="section-title">Profesionales comprometidos con tu bienestar</h2>
+      </div>
+      <div class="reveal d2">
+        <p class="quienes-text">En Henko creamos un espacio integral donde la escucha, el acompañamiento y el trabajo terapéutico se unen para impulsar procesos de cambio genuinos.</p>
+        <p class="quienes-text" style="margin-top:.8rem">Nuestro equipo está formado por psicólogos, psicopedagogos, docentes y profesionales de la salud que trabajan de manera coordinada para ofrecer una mirada amplia e integradora.</p>
+      </div>
+      <div class="pillars reveal d3">
+        <div class="pillar"><h4>Psicología clínica</h4><p>Atención individual para adultos, adolescentes y niños</p></div>
+        <div class="pillar"><h4>Psicopedagogía</h4><p>Acompañamiento en procesos de aprendizaje</p></div>
+        <div class="pillar"><h4>Salud integral</h4><p>Mirada interdisciplinaria de cuerpo y mente</p></div>
+        <div class="pillar"><h4>Asesoramiento</h4><p>Consultoría para equipos y organizaciones</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TALLERES -->
+<section class="talleres" id="talleres">
+  <div class="talleres-header reveal">
+    <div>
+      <p class="eyebrow">Lo que ofrecemos</p>
+      <h2 class="section-title">Nuestros talleres y grupos</h2>
+    </div>
+    <p class="talleres-note">Consultanos por días, horarios y vacantes disponibles en cada espacio.</p>
+  </div>
+  <div class="talleres-grid">
+    <div class="taller-card reveal d1">
+      <div class="taller-img-wrap">
+        <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=75" alt="Taller de duelo">
+        <span class="taller-badge">Grupo terapéutico</span>
+      </div>
+      <div class="taller-body">
+        <h3>Taller de duelo</h3>
+        <p>Un espacio de contención para atravesar pérdidas de todo tipo: vínculos, proyectos, identidades y roles de vida.</p>
+        <div class="taller-meta"><div class="taller-meta-dot"></div>Días y horarios a confirmar</div>
+      </div>
+    </div>
+    <div class="taller-card reveal d2">
+      <div class="taller-img-wrap">
+        <img src="https://images.unsplash.com/photo-1516302752625-fcc3c50ae61f?w=600&q=75" alt="Vínculos">
+        <span class="taller-badge">Grupo terapéutico</span>
+      </div>
+      <div class="taller-body">
+        <h3>Vínculos y relaciones</h3>
+        <p>Exploración de los patrones vinculares y cómo transformarlos para relacionarnos desde un lugar más sano.</p>
+        <div class="taller-meta"><div class="taller-meta-dot"></div>Días y horarios a confirmar</div>
+      </div>
+    </div>
+    <div class="taller-card reveal d3">
+      <div class="taller-img-wrap">
+        <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&q=75" alt="Desarrollo personal">
+        <span class="taller-badge">Grupo terapéutico</span>
+      </div>
+      <div class="taller-body">
+        <h3>Desarrollo personal</h3>
+        <p>Recorrido de autoconocimiento para identificar recursos internos y construir una vida más auténtica.</p>
+        <div class="taller-meta"><div class="taller-meta-dot"></div>Días y horarios a confirmar</div>
+      </div>
+    </div>
+    <div class="taller-card reveal d4">
+      <div class="taller-img-wrap">
+        <img src="https://images.unsplash.com/photo-1476703993599-0035a21b17a9?w=600&q=75" alt="Crianza">
+        <span class="taller-badge">Orientación familiar</span>
+      </div>
+      <div class="taller-body">
+        <h3>Crianza y parentalidad</h3>
+        <p>Espacio para padres y madres que buscan herramientas para acompañar el desarrollo emocional de sus hijos.</p>
+        <div class="taller-meta"><div class="taller-meta-dot"></div>Días y horarios a confirmar</div>
+      </div>
+    </div>
+    <div class="taller-card reveal d5">
+      <div class="taller-img-wrap">
+        <img src="https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=600&q=75" alt="Ansiedad">
+        <span class="taller-badge">Grupo terapéutico</span>
+      </div>
+      <div class="taller-body">
+        <h3>Ansiedad y bienestar</h3>
+        <p>Herramientas para gestionar la ansiedad, regular el sistema nervioso y sostener el equilibrio emocional.</p>
+        <div class="taller-meta"><div class="taller-meta-dot"></div>Días y horarios a confirmar</div>
+      </div>
+    </div>
+    <div class="taller-card reveal d6">
+      <div class="taller-img-wrap">
+        <img src="https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=600&q=75" alt="Clínica">
+        <span class="taller-badge">Atención individual</span>
+      </div>
+      <div class="taller-body">
+        <h3>Consulta clínica</h3>
+        <p>Atención psicológica para adultos, adolescentes y niños con profesionales especializados en distintas áreas.</p>
+        <div class="taller-meta"><div class="taller-meta-dot"></div>Lunes a viernes · Con turno previo</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="contacto" id="contacto">
+  <div class="contacto-inner">
+    <div class="reveal from-left">
+      <p class="eyebrow">Contacto</p>
+      <h2 class="section-title">¿Querés saber más?</h2>
+      <p>Escribinos por cualquiera de estos canales y te contamos sobre los talleres disponibles, vacantes y modalidades de trabajo.</p>
+      <div class="contact-btns">
+        <a href="https://wa.me/541126114333" target="_blank" rel="noopener" class="contact-btn btn-wa">
+          <div class="cbtn-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          </div>
+          WhatsApp · +54 11 2611-4333
+        </a>
+        <a href="https://www.instagram.com/espacio_terapeutico_henko?igsh=MWtrbnAxMDN6eWIybQ==" target="_blank" rel="noopener" class="contact-btn btn-ig">
+          <div class="cbtn-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </div>
+          Instagram · @espacio_terapeutico_henko
+        </a>
+        <a href="mailto:info@espaciohenko.com.ar" class="contact-btn btn-mail">
+          <div class="cbtn-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          info@espaciohenko.com.ar
+        </a>
+      </div>
+    </div>
+    <div class="form-wrap reveal from-right">
+      <h3>Dejanos tu consulta</h3>
+      <div id="form-container">
+        <div class="fg"><label>Nombre</label><input type="text" placeholder="Tu nombre" id="f-nombre"></div>
+        <div class="fg"><label>Email</label><input type="email" placeholder="tucorreo@mail.com" id="f-email"></div>
+        <div class="fg">
+          <label>¿Qué te interesa?</label>
+          <select id="f-interes">
+            <option value="">Seleccioná una opción</option>
+            <option>Taller de duelo</option>
+            <option>Vínculos y relaciones</option>
+            <option>Desarrollo personal</option>
+            <option>Crianza y parentalidad</option>
+            <option>Ansiedad y bienestar</option>
+            <option>Atención clínica individual</option>
+            <option>Otra consulta</option>
+          </select>
+        </div>
+        <div class="fg"><label>Mensaje (opcional)</label><textarea placeholder="Contanos un poco más..." id="f-mensaje"></textarea></div>
+        <button class="form-btn" onclick="enviarForm()">Enviar consulta →</button>
+      </div>
+      <div id="form-success">
+        <div class="s-icon">✉️</div>
+        <h4>¡Gracias!</h4>
+        <p>Vamos a responder tu consulta a la brevedad.<br>También podés escribirnos por WhatsApp.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img src="logo.jpg" alt="Henko">
+      <p>Un espacio terapéutico integral comprometido con el bienestar emocional en todas las etapas de la vida.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Navegación</h5>
+      <ul>
+        <li><a href="#quienes">Quiénes somos</a></li>
+        <li><a href="#talleres">Talleres</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Contacto</h5>
+      <ul>
+        <li><a href="https://wa.me/541126114333" target="_blank">+54 11 2611-4333</a></li>
+        <li><a href="mailto:info@espaciohenko.com.ar">info@espaciohenko.com.ar</a></li>
+        <li><a href="https://www.instagram.com/espacio_terapeutico_henko?igsh=MWtrbnAxMDN6eWIybQ==" target="_blank">@espacio_terapeutico_henko</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-copy">
+    <span>© 2025 Henko Espacio Integral · Buenos Aires, Argentina</span>
+    <span>Psicología · Psicopedagogía · Salud</span>
+  </div>
+</footer>
+
+<script>
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 30); }, { passive:true });
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold:0.1, rootMargin:'0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+window.addEventListener('load', () => {
+  document.querySelectorAll('.hero .reveal').forEach((el, i) => {
+    setTimeout(() => el.classList.add('visible'), 80 + i * 90);
+  });
+});
+
+function enviarForm() {
+  const n = document.getElementById('f-nombre').value.trim();
+  const e = document.getElementById('f-email').value.trim();
+  const i = document.getElementById('f-interes').value;
+  const m = document.getElementById('f-mensaje').value.trim();
+  if (!n || !e || !i) { alert('Por favor completá nombre, email y seleccioná una opción.'); return; }
+  const s = encodeURIComponent('Consulta web – ' + i);
+  const b = encodeURIComponent('Nombre: '+n+'\nEmail: '+e+'\nInterés: '+i+(m?'\n\nMensaje:\n'+m:''));
+  window.open('mailto:info@espaciohenko.com.ar?subject='+s+'&body='+b, '_blank');
+  document.getElementById('form-container').style.display = 'none';
+  document.getElementById('form-success').style.display = 'block';
+}
+</script>
+</body>
+</html>
