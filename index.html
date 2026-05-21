@@ -631,7 +631,7 @@ window.addEventListener('load', () => {
   });
 });
 
-emailjs.init('Sr_20icAuRbK9aDqg');
+emailjs.init({ publicKey: 'Sr_20icAuRbK9aDqg' });
 
 function enviarForm() {
   const nombre = document.getElementById('f-nombre').value.trim();
@@ -656,7 +656,8 @@ function enviarForm() {
   }).then(function () {
     document.getElementById('form-container').style.display = 'none';
     document.getElementById('form-success').style.display = 'block';
-  }).catch(function () {
+  }).catch(function (error) {
+    console.error('EmailJS error:', error);
     document.getElementById('form-error').style.display = 'block';
     btn.disabled = false;
     btn.textContent = 'Enviar consulta →';
