@@ -652,7 +652,7 @@ function enviarForm() {
   emailjs.send('service_isaxdcl', 'lf7sjzn', {
     name: nombre,
     email: email,
-    message: (interes ? interes + '\n\n' : '') + (mensaje || '(Sin mensaje)')
+    message: mensaje
   }).then(function () {
     document.getElementById('form-container').style.display = 'none';
     document.getElementById('form-success').style.display = 'block';
