@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Henko Espacio Integral</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -571,7 +572,10 @@ footer { background:#162018; color:#5a7060; padding:4rem 4rem 2.5rem; }
           </select>
         </div>
         <div class="fg"><label>Mensaje (opcional)</label><textarea placeholder="Contanos un poco más..." id="f-mensaje"></textarea></div>
-        <button class="form-btn" onclick="enviarForm()">Enviar consulta →</button>
+        <button class="form-btn" id="form-btn" onclick="enviarForm()">Enviar consulta →</button>
+        <div id="form-error" style="display:none;margin-top:12px;padding:12px 16px;background:#fef2f2;border:1px solid #fecaca;border-radius:5px;font-size:13px;color:#dc2626;">
+          Hubo un error al enviar tu consulta. Por favor intentá de nuevo o escribinos por <a href="https://wa.me/541126114333" style="color:#dc2626;font-weight:600;">WhatsApp</a>.
+        </div>
       </div>
       <div id="form-success">
         <div class="s-icon">✉️</div>
@@ -627,17 +631,37 @@ window.addEventListener('load', () => {
   });
 });
 
+emailjs.init('Sr_20icAuRbK9aDqg');
+
 function enviarForm() {
-  const n = document.getElementById('f-nombre').value.trim();
-  const e = document.getElementById('f-email').value.trim();
-  const i = document.getElementById('f-interes').value;
-  const m = document.getElementById('f-mensaje').value.trim();
-  if (!n || !e || !i) { alert('Por favor completá nombre, email y seleccioná una opción.'); return; }
-  const s = encodeURIComponent('Consulta web – ' + i);
-  const b = encodeURIComponent('Nombre: '+n+'\nEmail: '+e+'\nInterés: '+i+(m?'\n\nMensaje:\n'+m:''));
-  window.open('mailto:info@espaciohenko.com.ar?subject='+s+'&body='+b, '_blank');
-  document.getElementById('form-container').style.display = 'none';
-  document.getElementById('form-success').style.display = 'block';
+  const nombre = document.getElementById('f-nombre').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const interes = document.getElementById('f-interes').value;
+  const mensaje = document.getElementById('f-mensaje').value.trim();
+
+  if (!nombre || !email || !interes) {
+    alert('Por favor completá nombre, email y seleccioná una opción.');
+    return;
+  }
+
+  const btn = document.getElementById('form-btn');
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+  document.getElementById('form-error').style.display = 'none';
+
+  emailjs.send('service_isaxdcl', 'lf7sjzn', {
+    from_name: nombre,
+    reply_to: email,
+    interes: interes,
+    message: mensaje || '(Sin mensaje)'
+  }).then(function () {
+    document.getElementById('form-container').style.display = 'none';
+    document.getElementById('form-success').style.display = 'block';
+  }).catch(function () {
+    document.getElementById('form-error').style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Enviar consulta →';
+  });
 }
 </script>
 </body>
