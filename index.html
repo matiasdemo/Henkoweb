@@ -82,7 +82,7 @@ nav.scrolled .nav-cta:hover { background:var(--verde-oscuro) !important; }
 
 /* HERO */
 .hero {
-  min-height:100vh; display:grid; grid-template-columns:1fr;
+  min-height:100vh; display:grid; grid-template-columns:58% 42%;
   padding-top:68px; overflow:hidden; position:relative;
 }
 .hero-left {
@@ -93,7 +93,6 @@ nav.scrolled .nav-cta:hover { background:var(--verde-oscuro) !important; }
 /* ROTO divider — efecto zigzag desgarrado */
 .hero-left::after {
   content:'';
-  display:none;
   position:absolute; top:0; right:-60px; bottom:0; width:120px;
   background:var(--verde-suave); z-index:3;
   clip-path: polygon(
@@ -413,6 +412,9 @@ footer { background:#162018; color:#5a7060; padding:4rem 4rem 2.5rem; }
         <p>Grupos de <strong>6 personas</strong> para que cada proceso sea realmente escuchado</p>
       </div>
     </div>
+  </div>
+  <div class="hero-right">
+    <!-- foto nueva va acá -->
   </div>
 </section>
 
