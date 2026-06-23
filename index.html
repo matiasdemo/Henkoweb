@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Henko Espacio Integral</title>
+<title>Seiku Espacio Integral</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
@@ -82,7 +82,7 @@ nav.scrolled .nav-cta:hover { background:var(--verde-oscuro) !important; }
 
 /* HERO */
 .hero {
-  min-height:100vh; display:grid; grid-template-columns:58% 42%;
+  min-height:100vh; display:grid; grid-template-columns:1fr;
   padding-top:68px; overflow:hidden; position:relative;
 }
 .hero-left {
@@ -93,6 +93,7 @@ nav.scrolled .nav-cta:hover { background:var(--verde-oscuro) !important; }
 /* ROTO divider — efecto zigzag desgarrado */
 .hero-left::after {
   content:'';
+  display:none;
   position:absolute; top:0; right:-60px; bottom:0; width:120px;
   background:var(--verde-suave); z-index:3;
   clip-path: polygon(
@@ -384,7 +385,7 @@ footer { background:#162018; color:#5a7060; padding:4rem 4rem 2.5rem; }
 <body>
 
 <nav id="navbar">
-  <a href="#inicio" class="nav-logo"><img src="logo.jpg" alt="Henko Espacio Integral"></a>
+  <a href="#inicio" class="nav-logo"><img src="logo.jpg" alt="Seiku Espacio Integral"></a>
   <ul class="nav-links">
     <li><a href="#quienes">Quiénes somos</a></li>
     <li><a href="#talleres">Servicios</a></li>
@@ -413,9 +414,6 @@ footer { background:#162018; color:#5a7060; padding:4rem 4rem 2.5rem; }
       </div>
     </div>
   </div>
-  <div class="hero-right">
-    <img src="espacio.jpg" alt="Sala de talleres Henko">
-  </div>
 </section>
 
 <!-- QUIÉNES SOMOS -->
@@ -423,7 +421,7 @@ footer { background:#162018; color:#5a7060; padding:4rem 4rem 2.5rem; }
   <div class="quienes-inner">
     <div class="quienes-logo-col reveal from-left">
       <div class="quienes-bird-wrap">
-        <img src="bird.png" alt="Henko pájaro origami">
+        <img src="bird.png" alt="Seiku pájaro origami">
       </div>
       <p class="quienes-quote">"Un espacio pensado para acompañar procesos de cambio en todas las etapas de la vida."</p>
     </div>
@@ -433,9 +431,9 @@ footer { background:#162018; color:#5a7060; padding:4rem 4rem 2.5rem; }
         <h2 class="section-title">Profesionales comprometidos con tu bienestar</h2>
       </div>
       <div class="reveal d2">
-        <p class="quienes-text">En Henko creamos un espacio integral donde la escucha, el acompañamiento y el trabajo terapéutico se unen para impulsar procesos de cambio genuinos.</p>
+        <p class="quienes-text">En Seiku creamos un espacio integral donde la escucha, el acompañamiento y el trabajo terapéutico se unen para impulsar procesos de cambio genuinos.</p>
         <p class="quienes-text" style="margin-top:.8rem">Nuestro equipo está formado por profesionales que trabajan de manera coordinada para ofrecer una mirada amplia e integradora.</p>
-        <p class="quienes-text" style="margin-top:.8rem">Henko no es un lugar donde solo te explican qué te pasa, sino que es un lugar donde te extienden la mano mientras aprendes a sostenerte.</p>
+        <p class="quienes-text" style="margin-top:.8rem">Seiku no es un lugar donde solo te explican qué te pasa, sino que es un lugar donde te extienden la mano mientras aprendes a sostenerte.</p>
       </div>
       <div class="pillars reveal d3">
         <div class="pillar"><h4>Psicología clínica</h4><p>Atención clínica para niños, adolescentes, adultos, familias y parejas</p></div>
@@ -575,17 +573,17 @@ footer { background:#162018; color:#5a7060; padding:4rem 4rem 2.5rem; }
           </div>
           WhatsApp · +54 11 2611-4333
         </a>
-        <a href="https://www.instagram.com/espacio_terapeutico_henko?igsh=MWtrbnAxMDN6eWIybQ==" target="_blank" rel="noopener" class="contact-btn btn-ig">
+        <a href="https://www.instagram.com/espacioseiku" target="_blank" rel="noopener" class="contact-btn btn-ig">
           <div class="cbtn-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
           </div>
-          Instagram · @espacio_terapeutico_henko
+          Instagram · @espacioseiku
         </a>
-        <a href="mailto:info@espaciohenko.com.ar" class="contact-btn btn-mail">
+        <a href="mailto:info@espacioseiku.com.ar" class="contact-btn btn-mail">
           <div class="cbtn-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           </div>
-          info@espaciohenko.com.ar
+          info@espacioseiku.com.ar
         </a>
       </div>
     </div>
@@ -629,7 +627,7 @@ footer { background:#162018; color:#5a7060; padding:4rem 4rem 2.5rem; }
 <footer>
   <div class="footer-inner">
     <div class="footer-brand">
-      <img src="logo.jpg" alt="Henko">
+      <img src="logo.jpg" alt="Seiku">
       <p>Un espacio terapéutico integral comprometido con el bienestar emocional en todas las etapas de la vida.</p>
     </div>
     <div class="footer-col">
@@ -644,13 +642,13 @@ footer { background:#162018; color:#5a7060; padding:4rem 4rem 2.5rem; }
       <h5>Contacto</h5>
       <ul>
         <li><a href="https://wa.me/541126114333" target="_blank">+54 11 2611-4333</a></li>
-        <li><a href="mailto:info@espaciohenko.com.ar">info@espaciohenko.com.ar</a></li>
-        <li><a href="https://www.instagram.com/espacio_terapeutico_henko?igsh=MWtrbnAxMDN6eWIybQ==" target="_blank">@espacio_terapeutico_henko</a></li>
+        <li><a href="mailto:info@espacioseiku.com.ar">info@espacioseiku.com.ar</a></li>
+        <li><a href="https://www.instagram.com/espacioseiku" target="_blank">@espacioseiku</a></li>
       </ul>
     </div>
   </div>
   <div class="footer-copy">
-    <span>© 2025 Henko Espacio Integral · Buenos Aires, Argentina</span>
+    <span>© 2025 Seiku Espacio Integral · Buenos Aires, Argentina</span>
     <span>Psicología · Psicopedagogía · Salud</span>
   </div>
 </footer>
